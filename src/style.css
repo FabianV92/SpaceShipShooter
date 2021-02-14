@@ -3,3 +3,13 @@
     padding: 0;
 }
 
+.playerShip {
+    top: 50px;
+    left: 50px;
+}
+canvas {
+    z-index: 100;
+}
+.hidden {
+    display: none;
+}

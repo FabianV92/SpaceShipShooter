@@ -2,13 +2,17 @@
 const canvas = document.querySelector("canvas");
 
 // Setting the height and width to the canvas
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
+canvas.width = 650;
+canvas.height = 650;
 
 // Adding background color to the canvas
 canvas.style.background = "black";
 
 // adding random stars
+
+
+
+
 let pixel = canvas.getContext("2d");
 let y = 0;
 let x = 10;
@@ -31,4 +35,14 @@ const animate = function () {
 }
 // Calling the animate function
 animate();
+
+const img = document.createElement("img");
+img.src = "../pictures/playerShip1_blue.png";
+canvas.appendChild(img);
+
+window.onload = function () {
+    console.log("working")
+    pixel.drawImage(img, 50, 50);
+    pixel.fillStyle = "white";
+}
 
