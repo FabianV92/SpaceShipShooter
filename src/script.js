@@ -5,25 +5,19 @@
 
 class Model {
 
-    constructor(x, y, w, h) {
-        this.x = x;
-        this.y = y;
-        this.w = w;
-        this.h = h;
-
-    }
-
-    drawSnake = function () {
+    drawSnake = function (x, y, w, h) {
         const canvasEl = document.querySelector("canvas");
         const ctx = canvasEl.getContext("2d");
         ctx.fillStyle = "#78c479";
-        ctx.fillRect(this.x, this.y, this.w, this.h);
+        ctx.fillRect(x, y, w, h);
     }
-    clearSnake = function (x,y,w,h) {
+
+    clearSnake = function (x, y, w, h) {
         const canvasEl = document.querySelector("canvas");
         const ctx = canvasEl.getContext("2d");
-        ctx.clearRect(x,y,w,h);
+        ctx.clearRect(x, y, w, h);
     }
+
 }
 
 
@@ -58,34 +52,40 @@ class Controller {
         this.h = 25;
     }
 
+    update
     snakeControll = function () {
-
+        let snake = new Model(this);
+        snake.drawSnake(this.x, this.y, this.w, this.h);
         window.addEventListener("keydown", (e) => {
-            const snake = new Model(this.x, this.y, this.w, this.h);
+            console.log("current position" + this.y)
+            this.y = this.y > window.innerHeight ? (window.innerHeight - window.innerHeight) - 20 : this.y;
+            this.y = this.y < window.innerHeight - window.innerHeight - 20 ? window.innerHeight : this.y;
+            this.x = this.x > window.innerWidth ? (window.innerWidth - window.innerWidth) - 20 : this.x;
+            this.x = this.x < window.innerWidth - window.innerWidth - 20 ? window.innerWidth : this.x;
 
             switch (e.key) {
                 case  "ArrowRight" : {
                     this.x += 20;
-                    snake.clearSnake(0,0,500,500);
-                    snake.drawSnake();
+                    snake.clearSnake(0, 0, window.innerWidth, window.innerHeight);
+                    snake.drawSnake(this.x, this.y, this.w, this.h);
                     break;
                 }
                 case  "ArrowLeft" : {
                     this.x -= 20;
-                    snake.clearSnake(0,0,500,500);
-                    snake.drawSnake();
+                    snake.clearSnake(0, 0, window.innerWidth, window.innerHeight);
+                    snake.drawSnake(this.x, this.y, this.w, this.h);
                     break;
                 }
                 case "ArrowUp" : {
                     this.y -= 20;
-                    snake.clearSnake(0,0,500,500);
-                    snake.drawSnake();
+                    snake.clearSnake(0, 0, window.innerWidth, window.innerHeight);
+                    snake.drawSnake(this.x, this.y, this.w, this.h);
                     break;
                 }
                 case "ArrowDown" : {
                     this.y += 20;
-                    snake.clearSnake(0,0,500,500);
-                    snake.drawSnake();
+                    snake.clearSnake(0, 0, window.innerWidth, window.innerHeight);
+                    snake.drawSnake(this.x, this.y, this.w, this.h);
                     break;
                 }
             }
