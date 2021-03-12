@@ -5,17 +5,22 @@
 
 class Model {
 
+    // Selecting Elements
+    canvasEl = document.querySelector("canvas");
+    ctx = this.canvasEl.getContext("2d");
+
     drawSnake = function (x, y, w, h) {
-        const canvasEl = document.querySelector("canvas");
-        const ctx = canvasEl.getContext("2d");
-        ctx.fillStyle = "#78c479";
-        ctx.fillRect(x, y, w, h);
+        this.ctx.fillStyle = "#78c479";
+        this.ctx.fillRect(x, y, w, h);
     }
 
     clearSnake = function (x, y, w, h) {
-        const canvasEl = document.querySelector("canvas");
-        const ctx = canvasEl.getContext("2d");
-        ctx.clearRect(x, y, w, h);
+        this.ctx.clearRect(x, y, w, h);
+    }
+
+    drawFood = function (x, y, w, h) {
+        this.ctx.fillStyle= "#c84f59";
+        this.ctx.fillRect(x,y,w,h);
     }
 
 }
@@ -56,6 +61,8 @@ class Controller {
     moveX = 0;
     moveY = 0;
 
+    rndNumbX = (Math.trunc(Math.random() * 450)) + 1;
+    rndNumbY = (Math.trunc(Math.random() * 450)) + 1;
     snakeControll = () => {
         // Safety checks an resets position if snake leaves the canvas
         this.y = this.y > window.innerHeight ? (window.innerHeight - window.innerHeight) - 20 : this.y;
@@ -68,9 +75,9 @@ class Controller {
         this.snake.clearSnake(0, 0, window.innerWidth, window.innerHeight);
         this.snake.drawSnake(this.x, this.y, this.w, this.h);
 
-
         this.x += this.moveX , this.y += this.moveY;
-
+        this.snake.drawFood(this.rndNumbX, this.rndNumbY, 20, 20);
+        if (this.x
 
         window.addEventListener("keydown", (e) => {
             switch (e.key) {
