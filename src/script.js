@@ -19,8 +19,11 @@ class Model {
     }
 
     drawFood = function (x, y, w, h) {
-        this.ctx.fillStyle= "#c84f59";
-        this.ctx.fillRect(x,y,w,h);
+        this.ctx.fillStyle = "#c84f59";
+        this.ctx.fillRect(x, y, w, h);
+    }
+    clearFood = function (x, y, w, h) {
+        this.ctx.clearRect(x, y, w, h);
     }
 
 }
@@ -58,11 +61,12 @@ class Controller {
     }
 
     snake = new Model(this);
+    snakeGrow = new Model(this);
     moveX = 0;
     moveY = 0;
 
-    rndNumbX = (Math.trunc(Math.random() * 450)) + 1;
-    rndNumbY = (Math.trunc(Math.random() * 450)) + 1;
+    rndNumbX = 300;
+    rndNumbY = 300;
     snakeControll = () => {
         // Safety checks an resets position if snake leaves the canvas
         this.y = this.y > window.innerHeight ? (window.innerHeight - window.innerHeight) - 20 : this.y;
@@ -76,8 +80,22 @@ class Controller {
         this.snake.drawSnake(this.x, this.y, this.w, this.h);
 
         this.x += this.moveX , this.y += this.moveY;
-        this.snake.drawFood(this.rndNumbX, this.rndNumbY, 20, 20);
-        if (this.x
+
+        // If food got eaten by snake generates new food
+        if (this.x < (this.rndNumbX + 20) && this.x > this.rndNumbX - 20 &&
+            this.y < this.rndNumbY + 20 && this.y > this.rndNumbY - 20) {
+            this.snake.clearFood(this.rndNumbX, this.rndNumbY, window.innerWidth, window.innerHeight);
+            this.rndNumbX = (Math.trunc(Math.random() * 450) + 1);
+            this.rndNumbY = (Math.trunc(Math.random() * 450) + 1);
+
+            //  Let the snake grow
+            //this.snake.clearSnake(this.x,this.y,window.innerWidth,window.innerHeight);
+            //this.snakeGrow.clearSnake(0,0,window.innerWidth,window.innerHeight);
+            this.snakeGrow.drawSnake(this.x-25,this.y+25,this.w,this.h);
+        }
+
+        this.snake.drawFood(this.rndNumbX, this.rndNumbY, 25, 25);
+
 
         window.addEventListener("keydown", (e) => {
             switch (e.key) {
