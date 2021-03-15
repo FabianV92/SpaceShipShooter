@@ -1,23 +1,27 @@
 "use strict";
 
-// Window on load function
-
 
 class Model {
+
+    constructor() {
+        this.rndNumbX = 300;
+        this.rndNumbY = 300;
+    }
 
     // Selecting Elements
     canvasEl = document.querySelector("canvas");
     ctx = this.canvasEl.getContext("2d");
 
+    // Draw and clear the snake
     drawSnake = function (x, y, w, h) {
         this.ctx.fillStyle = "#78c479";
         this.ctx.fillRect(x, y, w, h);
     }
-
     clearSnake = function (x, y, w, h) {
         this.ctx.clearRect(x, y, w, h);
     }
 
+    // Draw and clear food
     drawFood = function (x, y, w, h) {
         this.ctx.fillStyle = "#c84f59";
         this.ctx.fillRect(x, y, w, h);
@@ -26,6 +30,17 @@ class Model {
         this.ctx.clearRect(x, y, w, h);
     }
 
+    // Draw new snake segment
+    drawNewSegment = function (x, y, w, h) {
+        this.ctx.fillStyle = "#78c479";
+        this.ctx.fillRect(x,y,w,h)
+    }
+
+    // Create randomly food via math.random method
+    createRndFood = () => {
+        this.rndNumbX = (Math.trunc(Math.random() * 450) + 1);
+        this.rndNumbY = (Math.trunc(Math.random() * 450) + 1);
+    }
 }
 
 
@@ -65,38 +80,33 @@ class Controller {
     moveX = 0;
     moveY = 0;
 
-    rndNumbX = 300;
-    rndNumbY = 300;
-    snakeControll = () => {
-        // Safety checks an resets position if snake leaves the canvas
+    snakeControl = () => {
+        requestAnimationFrame(this.snakeControl);
+
+        // Safety checks an resets position if snake leaves the canvas WILL BE changed!!!!!!
         this.y = this.y > window.innerHeight ? (window.innerHeight - window.innerHeight) - 20 : this.y;
         this.y = this.y < window.innerHeight - window.innerHeight - 20 ? window.innerHeight : this.y;
         this.x = this.x > window.innerWidth ? (window.innerWidth - window.innerWidth) - 20 : this.x;
         this.x = this.x < window.innerWidth - window.innerWidth - 20 ? window.innerWidth : this.x;
 
-        requestAnimationFrame(this.snakeControll);
         // Cleaning last position and drawing the snake
-        this.snake.clearSnake(0, 0, window.innerWidth, window.innerHeight);
-        this.snake.drawSnake(this.x, this.y, this.w, this.h);
+        this.snake.clearSnake(0, 0, this.x, this.y);
+        this.snake.drawSnake(this.x, this.y, 25, 25);
 
-        this.x += this.moveX , this.y += this.moveY;
+        // If food got eaten by snake generates new food and generates new segment of the snake (let the snake grow)
+        if (this.x < (this.snake.rndNumbX + 20) && this.x > this.snake.rndNumbX - 20 &&
+            this.y < this.snake.rndNumbY + 20 && this.y > this.snake.rndNumbY - 20) {
+            this.snake.clearFood(this.snake.rndNumbX, this.snake.rndNumbY, window.innerWidth, window.innerHeight);
+            this.snake.createRndFood();
 
-        // If food got eaten by snake generates new food
-        if (this.x < (this.rndNumbX + 20) && this.x > this.rndNumbX - 20 &&
-            this.y < this.rndNumbY + 20 && this.y > this.rndNumbY - 20) {
-            this.snake.clearFood(this.rndNumbX, this.rndNumbY, window.innerWidth, window.innerHeight);
-            this.rndNumbX = (Math.trunc(Math.random() * 450) + 1);
-            this.rndNumbY = (Math.trunc(Math.random() * 450) + 1);
+        // Adding new segment to the snake
 
-            //  Let the snake grow
-            //this.snake.clearSnake(this.x,this.y,window.innerWidth,window.innerHeight);
-            //this.snakeGrow.clearSnake(0,0,window.innerWidth,window.innerHeight);
-            this.snakeGrow.drawSnake(this.x-25,this.y+25,this.w,this.h);
+            this.snakeGrow.drawNewSegment(250,250,this.h,this.w);
+
         }
+        this.snake.drawFood(this.snake.rndNumbX, this.snake.rndNumbY, 25, 25);
 
-        this.snake.drawFood(this.rndNumbX, this.rndNumbY, 25, 25);
-
-
+        // Controls via switch case, using arrow keys
         window.addEventListener("keydown", (e) => {
             switch (e.key) {
                 case  "ArrowRight" : {
@@ -119,18 +129,18 @@ class Controller {
                     this.moveY = 3;
                     break;
                 }
-
             }
         })
+        this.x += this.moveX , this.y += this.moveY;
     }
-
 }
+
 
 const main = function () {
     const window = new View(500, 500);
     window.windowSettings();
     const snakeControll = new Controller();
-    snakeControll.snakeControll();
+    snakeControll.snakeControl();
 
 
 }();
